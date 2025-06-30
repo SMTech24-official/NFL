@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fastapi_app_system
+    container_name: fastapi_app_system5
     expose:
       - '8000'
     env_file:
@@ -17,9 +17,9 @@ services:
 
   nginx:
     image: nginx:alpine
-    container_name: nginx_proxy2
+    container_name: nginx_proxy3
     ports:
-      - '0.0.0.0:5019:80'
+      - '0.0.0.0:5029:80'
     networks:
       - app-network
     volumes:
