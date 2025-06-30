@@ -1,22 +1,33 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
 
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+
+# Install required packages and dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    libffi-dev \
+    libssl-dev \
+    python3-dev \
+    musl-dev \
+    net-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy requirements file
-COPY requirements.txt .
+# Copy the requirements file into the container
+COPY requirements.txt /app/
 
-# Install dependencies
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Copy the app code into the container
+COPY . /app/
 
-# Create a non-root user and switch to it
-RUN adduser --disabled-password --gecos '' appuser
-USER appuser
-
-# Expose the port the app runs on
+# Expose port 8000 (Uvicorn will run here)
 EXPOSE 8000
 
-# Command to run the application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run the Uvicorn server
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
